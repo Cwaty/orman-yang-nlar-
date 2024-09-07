@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamercan Adıgüzel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .fire-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .fire-item {
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Türkiye'deki Son 20 Yangın</h1>
+    <ul class="fire-list" id="fireList"></ul>
+
+    <script>
+        fetch('https://firms.modaps.eosdis.nasa.gov/api/active_fire/v2?start_date=2024-09-01&end_date=2024-09-30&bbox=26.0,36.0,45.0,42.0')
+            .then(response => response.json())
+            .then(data => {
+                const fireList = document.getElementById('fireList');
+                const fires = data.features.slice(0, 20); 
+
+                fires.forEach(fire => {
+                    const li = document.createElement('li');
+                    li.classList.add('fire-item');
+                    li.innerHTML = `
+                        <strong>Yangın ID:</strong> ${fire.id}<br>
+                        <strong>Koordinatlar:</strong> ${fire.geometry.coordinates.join(', ')}<br>
+                        <strong>Başlangıç Tarihi:</strong> ${fire.properties.date}
+                    `;
+                    fireList.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Hata:', error));
+    </script>
+</body>
+</html>
